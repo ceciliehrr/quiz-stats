@@ -10,7 +10,7 @@
 
 <script>
 import LineChart from "./Line.js";
-import stats from "@/data/quiz-stats.json";
+import stats from "@/data/quiz-statsul.json";
 
 export default {
   components: {
@@ -27,7 +27,8 @@ export default {
   },
   methods: {
     getCount() {
-      return this.quizStats.map((obj) => obj.prosent.toString());
+      const stats8 = this.quizStats.slice(0, 7);
+      return stats8.map((obj) => obj.prosent.toString());
     },
     getLabels() {
       var value = [];
@@ -58,14 +59,14 @@ export default {
         labels: this.getLabels(),
         datasets: [
           {
-            label: "Quiz-stats i prosent",
+            label: "Quiz-stats i prosent - de siste 7 quizzene",
             backgroundColor: this.gradient2,
             borderColor: "#43f8b6",
             pointBackgroundColor: "#43f8b6",
-            pointBorderWidth: 10,
-            pointHoverRadius: 10,
+            pointBorderWidth: 8,
+            pointHoverRadius: 20,
             pointHoverBorderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 8,
             data: this.getCount(),
           },
         ],
