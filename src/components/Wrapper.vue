@@ -1,16 +1,18 @@
 <template>
   <div class="row">
-    <TopList />
+    <Score />
+    <!--<TopList />-->
   </div>
 </template>
 
 <script>
-import TopList from "@/components/TopList";
-
+//import TopList from "@/components/TopList";
+import Score from "@/components/Score";
 export default {
   name: "Wrapper",
   components: {
-    TopList,
+    //TopList,
+    Score,
   },
   data() {
     return {
@@ -20,10 +22,4 @@ export default {
 };
 </script>
 
-<style>
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-</style>
+<style></style>

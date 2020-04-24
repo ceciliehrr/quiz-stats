@@ -1,19 +1,18 @@
 <template>
   <div id="app">
     <Dashboard />
-    <HistoryStats />
   </div>
 </template>
 
 <script>
 //import Dashboard from "./components/Dashboard.vue";
-import HistoryStats from "./components/HistoryStats.vue";
+//import HistoryStats from "./components/HistoryStats.vue";
 import Dashboard from "./components/Dashboard.vue";
 export default {
   name: "App",
   components: {
     Dashboard,
-    HistoryStats,
+    //HistoryStats,
   },
 };
 </script>
@@ -27,10 +26,14 @@ export default {
   color: #2c3e50;
 }
 html {
-  height: 100%;
   background-color: #020218;
 }
+html,
 body {
-  margin: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
 }
 </style>

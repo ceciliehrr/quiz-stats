@@ -1,94 +1,133 @@
 <template>
   <section class="scores">
-    <div class="column" v-for="filterKpi in filteredKpi" :key="filterKpi.id">
+    <div class="column" v-for="items in sortedCards" :key="items.id">
       <div class="card">
-        <section class="header">
-          <p class="name">{{ filterKpi.name }}</p>
-        </section>
-        <section v-if="errored">
-          <p>Kan ikke finne data</p>
-        </section>
-        <section v-else>
-          <Loader v-if="loading"></Loader>
-          <div v-else>
-            <div class="kpiOne" v-if="filterKpi.id == 1">
-              <div class="score">{{ allDatasets }}</div>
-              <p class="sub">DATASETT</p>
-            </div>
-            <div class="kpiTwo" v-if="filterKpi.id == 2">
-              <div class="score">{{ usedDatasetScoreInMillions }}</div>
-              <p class="sub">MILLIONER</p>
-            </div>
-          </div>
-        </section>
+        <p class="name">{{ items.hvor }}</p>
+        <hr />
+        <div class="score">{{ items.prosent }}%</div>
+        <p class="sub">RIKTIGE SVAR</p>
+        <div class="info first">
+          Dato:
+          <div class="two">{{ dateToLabel(items.dato) }}</div>
+        </div>
+        <div class="info">
+          Plass:
+          <div class="two">{{ items.plass }} av {{ items.antall_lag }}</div>
+        </div>
+        <div class="info">
+          Score:
+          <div class="two">{{ items.score }} av {{ items.goal }} spørsmål</div>
+        </div>
+        <div class="info last">
+          Lagkompiser med:
+          <span class="two" v-for="medl in items.quizmedlemmer" :key="medl.id">
+            {{ medl + ", " }}
+          </span>
+        </div>
       </div>
     </div>
   </section>
 </template>
 <script>
-import Loader from "@/animations/Loader";
+import info from "@/data/quiz-stats.json";
 
 export default {
   name: "Score",
-  components: {
-    Loader
-  },
-  props: {
-    stats: Array
-  },
+  components: {},
   data() {
     return {
-      datasets: [],
-      errored: false,
-      loading: true,
-      usedDatasetScore: {}
+      quizInfo: info,
+      sorted: [],
     };
   },
-
   computed: {
-    usedDatasetScoreInMillions() {
-      const sum = this.usedDatasetScore / 10 ** 6;
-      return sum.toLocaleString("nb", { maximumFractionDigits: 1 });
-    }
+    sortedCards: function() {
+      return this.sortCards(this.quizInfo);
+    },
   },
-  mounted() {
-    this.getAllDatasets(conf.urls.metadataDatasets);
-    this.getUsedDataset(conf.urls.sumUsedDatasets);
-    this.intervalFetchData(conf.urls.metadataDatasets, this.getAllDatasets);
-    this.intervalFetchData(conf.urls.sumUsedDatasets, this.getUsedDataset);
-  }
+  methods: {
+    sortCards: function(array) {
+      function compare(a, b) {
+        if (a.prosent < b.prosent) {
+          return 1;
+        } else if (a.prosent > b.prosent) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
+      return array.sort(compare);
+    },
+    dateToLabel(date) {
+      const monthNames = [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAI",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OKT",
+        "NOV",
+        "DES",
+      ];
+      const [year, day, month] = date.split("-");
+      const monthName = monthNames[parseInt(month, 10) - 1];
+      return day + ". " + monthName + " " + year;
+    },
+  },
+  mounted() {},
 };
 </script>
-<style lang="scss" scoped>
-@import "@/assets/sass/variables";
-@import "@/assets/sass/fontStyle.scss";
+<style scoped>
 * {
   box-sizing: border-box;
+}
+.scores {
+  margin-top: 50px;
 }
 h1,
 h2,
 p {
-  color: $primary-text-color;
+  color: white;
   min-height: 15px;
 }
-.header {
-  width: 100%;
+.info {
+  color: grey;
 }
-.name {
-  margin-top: 40px;
-  font-size: 20px;
+.first {
+  margin-top: 15px;
 }
-.score {
-  color: $positive-color;
-  font-size: 4vw;
-  line-height: 100%;
+.last {
+  margin-top: 15px;
+}
+.info .two {
+  color: white;
+}
+hr {
+  border: 1px dashed #3c3c4e;
+  width: 50%;
+  text-align: left;
+  margin-left: 0;
+}
+.card {
+  text-align: left;
   animation-name: fadeIn;
   animation-duration: 1s;
 }
-.sub {
+.name {
   font-size: 20px;
-  font-family: "Oslo Regular";
-  color: $sub-text-color;
+}
+.score {
+  color: #43f8b6;
+  font-size: 30px;
+  line-height: 100%;
+}
+.sub {
+  font-size: 13px;
+  color: #3c3c4e;
   margin: 0;
 }
 .column {
@@ -101,19 +140,14 @@ p {
   padding: 16px;
   margin-bottom: 15px;
   background: hsla(0, 0%, 100%, 0.05);
-  height: 530px;
-  display: flex;
-  flex-direction: column;
 }
-.card > :nth-child(1) {
-  height: 30%;
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
 }
-.card > :nth-child(2) {
-  height: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -125,18 +159,20 @@ p {
 }
 
 @media screen and (max-width: 600px) {
-  .card {
-    max-height: auto;
-    min-height: auto;
-  }
+  /* Responsive columns */
   .column {
     width: 100%;
     display: block;
     margin-bottom: 20px;
   }
+  /* Style the counter cards */
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+  }
   .score {
     margin: 0;
-    font-size: 15vw;
+    font-size: 30px;
   }
   .loader {
     margin: 0 auto;
