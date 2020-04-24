@@ -4,7 +4,7 @@
       <img v-bind:src="image" class="image" />
     </div>
     <h1>{{ title }}</h1>
-    <h2>Hvor mange riktige i prosent</h2>
+    <h2>Hvor mange riktige svar i prosent</h2>
     <!--<Wrapper />-->
   </div>
 </template>
@@ -32,7 +32,7 @@ h1 {
 }
 h2 {
   color: grey;
-  font-size: 18px;
+  font-size: 13px;
 }
 .dashboard {
   background-color: #020218;
