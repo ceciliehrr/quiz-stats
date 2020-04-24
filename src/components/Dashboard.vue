@@ -4,6 +4,7 @@
       <img v-bind:src="image" class="image" />
     </div>
     <h1>{{ title }}</h1>
+    <h2>Hvor mange riktige i prosent</h2>
     <!--<Wrapper />-->
   </div>
 </template>
@@ -28,6 +29,10 @@ export default {
 h1 {
   font-size: 25px;
   color: white;
+}
+h2 {
+  color: grey;
+  font-size: 18px;
 }
 .dashboard {
   background-color: #020218;
