@@ -78,7 +78,7 @@ export default {
 <style scoped>
 .chartwrapper {
   margin: 0;
-  width: 50%;
+  width: 90%;
 }
 .historyChart {
   max-width: 800px;
@@ -89,7 +89,7 @@ p {
 }
 @media screen and (max-width: 600px) {
   .chartwrapper {
-    width: 100%;
+    width: 95%;
   }
 }
 </style>
