@@ -7,7 +7,7 @@
 
 <script>
 //import TopList from "@/components/TopList";
-import Score from "@/components/Score";
+import Score from "./Score.vue";
 export default {
   name: "Wrapper",
   components: {

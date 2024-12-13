@@ -28,37 +28,27 @@
     </div>
   </section>
 </template>
+
 <script>
-import info from "@/data/quiz-stats.json";
+import { ref, computed } from "vue";
+import info from "../data/quiz-stats.json";
 
 export default {
   name: "Score",
-  components: {},
-  data() {
-    return {
-      quizInfo: info,
-      sorted: [],
+  setup() {
+    const quizInfo = ref(info);
+
+    const sortCards = (array) => {
+      return array.sort((a, b) => {
+        if (a.prosent < b.prosent) return 1;
+        if (a.prosent > b.prosent) return -1;
+        return 0;
+      });
     };
-  },
-  computed: {
-    sortedCards: function() {
-      return this.sortCards(this.quizInfo);
-    },
-  },
-  methods: {
-    sortCards: function(array) {
-      function compare(a, b) {
-        if (a.prosent < b.prosent) {
-          return 1;
-        } else if (a.prosent > b.prosent) {
-          return -1;
-        } else {
-          return 0;
-        }
-      }
-      return array.sort(compare);
-    },
-    dateToLabel(date) {
+
+    const sortedCards = computed(() => sortCards(quizInfo.value));
+
+    const dateToLabel = (date) => {
       const monthNames = [
         "JAN",
         "FEB",
@@ -75,12 +65,17 @@ export default {
       ];
       const [year, day, month] = date.split("-");
       const monthName = monthNames[parseInt(month, 10) - 1];
-      return day + ". " + monthName + " " + year;
-    },
+      return `${day}. ${monthName} ${year}`;
+    };
+
+    return {
+      sortedCards,
+      dateToLabel,
+    };
   },
-  mounted() {},
 };
 </script>
+
 <style scoped>
 * {
   box-sizing: border-box;

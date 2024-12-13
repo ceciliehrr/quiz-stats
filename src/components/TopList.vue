@@ -12,13 +12,9 @@
             type="number"
             v-model.number="newDay"
             id="tidsperiode"
-            @keyup.enter="updateList()"
+            @keyup.enter="updateList"
           />
-          <button
-            type="button"
-            class="update-list-button"
-            @click="updateList()"
-          >
+          <button type="button" class="update-list-button" @click="updateList">
             <SearchIcon />
           </button>
         </section>
@@ -39,10 +35,7 @@
             </table>
             <div class="tbl-content">
               <table cellpadding="0" cellspacing="0" border="0">
-                <tbody
-                  v-for="(item, index) in showDatasetList"
-                  :key="item.index"
-                >
+                <tbody v-for="(item, index) in showDatasetList" :key="index">
                   <tr>
                     <td>{{ index + 1 }}</td>
                     <td>{{ item.plass }}</td>
@@ -76,49 +69,59 @@
     </div>
   </section>
 </template>
+
 <script>
-import SearchIcon from "@/assets/SearchIcon";
-import stats from "@/data/quiz-stats.json";
+import { ref, computed } from "vue";
+import SearchIcon from "../assets/SearchIcon.vue";
+import stats from "../data/quiz-stats.json";
+
 export default {
   name: "TopList",
   components: {
     SearchIcon,
   },
-  props: {},
-  data() {
+  setup() {
+    // Reactive state variables
+    const quizStats = ref(stats);
+    const day = ref(7);
+    const newDay = ref("");
+    const placeh = "antall dager";
+    const errorMessage = ref("");
+    const showAll = ref(false);
+
+    // Computed property for the dataset list
+    const showDatasetList = computed(() => {
+      return showAll.value ? quizStats.value : quizStats.value.slice(0, 5);
+    });
+
+    // Methods
+    const updateList = () => {
+      if (newDay.value === "") {
+        errorMessage.value = "FEIL: Mangler et tall";
+      } else if (!Number.isInteger(newDay.value)) {
+        errorMessage.value = "FEIL: Desimaler er ikke lov";
+      } else {
+        day.value = newDay.value;
+        newDay.value = "";
+        errorMessage.value = ""; // Clear error message
+      }
+    };
+
+    // Expose variables and methods to the template
     return {
-      quizStats: stats,
-      day: 7,
-      newDay: "",
-      placeh: "antall dager",
-      errorMessage: "",
-      showAll: false,
+      quizStats,
+      day,
+      newDay,
+      placeh,
+      errorMessage,
+      showAll,
+      showDatasetList,
+      updateList,
     };
   },
-  computed: {
-    showDatasetList: function() {
-      if (!this.showAll) {
-        return this.quizStats.slice(0, 5);
-      } else {
-        return this.quizStats;
-      }
-    },
-  },
-  methods: {
-    updateList() {
-      if (this.newDay === "") {
-        this.errorMessage = "FEIL: Mangler et tall";
-      } else if (Number.isInteger(this.newDay) === false) {
-        this.errorMessage = "FEIL: Desimaler er ikke lov";
-      } else {
-        this.day = this.newDay;
-        this.newDay = "";
-      }
-    },
-  },
-  mounted() {},
 };
 </script>
+
 <style scoped>
 * {
   box-sizing: border-box;
